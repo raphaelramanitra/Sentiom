@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from models.telemetry import IncomingTelemetry
+from routers import endpoints
 
 #FastAPI application instance (centralizing routes)
 app = FastAPI(title = "FastAPI Application", description = "This is a FastAPI application for IoT devices")
@@ -7,6 +9,10 @@ app = FastAPI(title = "FastAPI Application", description = "This is a FastAPI ap
 @app.get("/")
 def read_root():
     return {"message": "Sentiom IOT Application is online"}
+
+app.include_router(endpoints.router)
+
+
 
 #launch uvicorn server when running the app locally
 if __name__ == "__main__":
