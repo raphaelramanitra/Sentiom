@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, Integer, String, DateTime
+from sqlalchemy import JSON, Column, Float, Integer, String, DateTime
 from database import Base
 
 class SavedTelemetry(Base):
@@ -10,8 +10,4 @@ class SavedTelemetry(Base):
     building_id = Column(String)
     unit = Column(String)
     timestamp = Column(DateTime)
-    temperature_c = Column(Float)
-    humidity_pct = Column(Float)
-    leak_resistance_ohm = Column(Float)
-    battery_pct = Column(Integer)
-    signal_quality = Column(Float)
+    values = Column(JSON)
