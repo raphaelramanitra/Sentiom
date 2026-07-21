@@ -15,6 +15,7 @@ app = FastAPI(title = "FastAPI Application", description = "This is a FastAPI ap
 @app.get("/")
 def read_root():
     return {"message": "Sentiom IOT Application is online"}
+    
 
 app.include_router(endpoints.router)
 

@@ -13,7 +13,7 @@ class IncomingTelemetry(BaseModel):
     @field_validator("device_type")
     @classmethod
     def validate_device_type(cls, value:str) -> str:
-        allowed_types = ["kepler", "archimede", "newton", "galielo", "thermostat"]
+        allowed_types = ["kepler", "archimede", "newton", "galileo", "thermostat"]
         val_lower = value.lower()
         if val_lower not in allowed_types:
             raise ValueError(f"Invalid device type: {value} must be one of either {allowed_types}")
