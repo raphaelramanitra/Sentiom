@@ -3,6 +3,10 @@ from typing import Dict, Any
 from datetime import datetime
 
 class IncomingTelemetry(BaseModel):
+    """
+    Pydantic schema for validating incoming telemetry payloads.
+    Ensures all required fields are present, properly formatted, and within allowed values.
+    """
     device_id: StrictStr = Field(..., description="Unique identifier for the device")
     device_type: StrictStr = Field(..., description="Type of the device")
     building_id: StrictStr = Field(..., description="Unique identifier for the building")

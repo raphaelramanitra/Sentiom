@@ -1,19 +1,22 @@
-from datetime import datetime, timezone
 import json
-from typing import Optional
+from datetime import datetime, timezone
+from typing import Optional, Dict, Any
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from models.telemetry import IncomingTelemetry
+
+from models.schemas_telemetry import IncomingTelemetry
 from models.database_models import SavedTelemetry
-from database import get_db, engine
+from database import get_db
 from services.anomaly_engine import detect_anomalies
 
 router = APIRouter(prefix="/telemetry", tags=["Telemetry"])
 
 @router.post("/")
 def receive_telemetry(payload: IncomingTelemetry, db: Session = Depends(get_db)):
-
+    """
+    Ingests telemetry data, evaluates it for anomalies, and persists it to the SQLite database.
+    """
 
     anomalies = detect_anomalies(payload.device_type, payload.values)
 
@@ -40,7 +43,8 @@ def receive_telemetry(payload: IncomingTelemetry, db: Session = Depends(get_db))
     return {
         "status": "success",
         "message": "Telemetry data saved to database successfully",
-        "saved_id": db_item.id
+        "saved_id": db_item.id,
+        "anomalies_detected": len(anomalies) > 0
     }
 
 @router.get("/")
@@ -50,9 +54,14 @@ def get_telemetry(
     building_id: Optional[str] = Query(None, description="Filter by building ID (ex: BLDG-001)"),
     unit: Optional[str] = Query(None, description="Filter by unit number (ex: 101)"),
 
-    limit: int = Query(20, description="Maximum number of results to return"),
+    limit: int = Query(50, description="Maximum number of results to return"),
     db: Session = Depends(get_db)
-):
+)-> Dict[str, Any]:
+    """
+    Retrieves recent telemetry data with optional filtering.
+    """
+    
+
     query = db.query(SavedTelemetry)
     if device_type:
         query = query.filter(SavedTelemetry.device_type == device_type)
@@ -79,6 +88,9 @@ def get_active_anomalies(
     db: Session = Depends(get_db)
 
 ):
+    """
+    Retrieves active anomalies from the database
+    """
     query = db.query(SavedTelemetry)
     if device_id:
         query = query.filter(SavedTelemetry.device_id == device_id)
