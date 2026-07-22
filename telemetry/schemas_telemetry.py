@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field, StrictStr, field_validator
+from pydantic import BaseModel, Field, StrictStr, field_validator, model_validator
 from typing import Dict, Any
 from datetime import datetime
+from telemetry.devices_config import SUPPORTED_DEVICES
 
 class IncomingTelemetry(BaseModel):
     """
@@ -17,10 +18,9 @@ class IncomingTelemetry(BaseModel):
     @field_validator("device_type")
     @classmethod
     def validate_device_type(cls, value:str) -> str:
-        allowed_types = ["kepler", "archimede", "newton", "galileo", "thermostat"]
         val_lower = value.lower()
-        if val_lower not in allowed_types:
-            raise ValueError(f"Invalid device type: {value} must be one of either {allowed_types}")
+        if val_lower not in SUPPORTED_DEVICES:
+            raise ValueError(f"Invalid device type: {value} must be one of either {list(SUPPORTED_DEVICES.keys())}")
         return val_lower
     
     @field_validator("building_id", "unit", "device_id")
@@ -36,3 +36,22 @@ class IncomingTelemetry(BaseModel):
         if not value:
             raise ValueError("The 'values' dictionary cannot be empty.")
         return value
+    
+    @model_validator(mode='after')
+    def validate_values_match_device_type(self) -> 'IncomingTelemetry':
+        expected_schema = SUPPORTED_DEVICES.get(self.device_type, {})
+
+        invalid_keys = [k for k in self.values.keys() if k not in expected_schema]
+        if invalid_keys:
+            raise ValueError(f"Invalid keys for device type '{self.device_type}': {invalid_keys}. Allowed: {list(expected_schema.keys())}")
+        
+        for key, expected_type in expected_schema.items():
+            if key in self.values:
+                val = self.values[key]
+                if expected_type is int and isinstance(val, bool):
+                    raise ValueError(f"Invalid type for '{key}': expected {expected_type.__name__}, got bool")
+                
+                if not isinstance(val, expected_type):
+                    raise ValueError(f"Invalid type for '{key}': expected {expected_type}, got {type(val).__name__}")
+
+        return self

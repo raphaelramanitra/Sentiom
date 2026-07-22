@@ -13,7 +13,7 @@ from services.anomaly_engine import detect_anomalies
 router = APIRouter(prefix="/telemetry", tags=["Telemetry"])
 
 @router.post("/")
-def receive_telemetry(payload: IncomingTelemetry, db: Session = Depends(get_db)):
+def send_telemetry(payload: IncomingTelemetry, db: Session = Depends(get_db)):
     """
     Ingests telemetry data, evaluates it for anomalies, and persists it to the SQLite database.
     """
@@ -120,6 +120,6 @@ def get_active_anomalies(
                 break
 
     return {
-        "total_anomalies_found": len(anomalies_list),
-        "data": anomalies_list
-    }
+    "total_anomalies_found": sum(len(item["anomalies"]) for item in anomalies_list),
+    "data": anomalies_list
+}

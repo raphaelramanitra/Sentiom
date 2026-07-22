@@ -1,6 +1,6 @@
 # IoT Telemetry API
 
-A robust, lightweight API built with **FastAPI** to ingest, validate, and analyze telemetry data from various IoT sensors. The system evaluates incoming data against business rules to detect anomalies in real-time and persists the payloads into a database.
+A lightweight API built with **FastAPI** to ingest, validate, and analyze telemetry data from various IoT sensors. The system evaluates incoming data against business rules to detect anomalies in real-time and persists the payloads into a database.
 
 ## 📁 Project Structure
 
