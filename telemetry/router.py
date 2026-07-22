@@ -5,9 +5,9 @@ from typing import Optional, Dict, Any
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-from models.schemas_telemetry import IncomingTelemetry
-from models.database_models import SavedTelemetry
-from database import get_db
+from telemetry.schemas_telemetry import IncomingTelemetry
+from database.models import SavedTelemetry
+from database.database import get_db
 from services.anomaly_engine import detect_anomalies
 
 router = APIRouter(prefix="/telemetry", tags=["Telemetry"])

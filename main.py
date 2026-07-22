@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from routers import telemetry
-from database import Base
+from telemetry import router
+from database.database import Base
 # Important: We must import the model so SQLAlchemy registers it in Base.metadata 
 # before calling create_all(), even if it appears unused in this file.
-from models.database_models import SavedTelemetry
-from database import engine
+from database.models import SavedTelemetry
+from database.database import engine
 
 
 #Initalize database tables based on the defined models
@@ -20,7 +20,7 @@ def read_root():
     return {"message": "Sentiom IOT Application is online"}
     
 
-app.include_router(telemetry.router)
+app.include_router(router.router)
 
 # Launch uvicorn server when running the script directly
 if __name__ == "__main__":

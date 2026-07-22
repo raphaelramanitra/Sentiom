@@ -1,5 +1,5 @@
 from sqlalchemy import JSON, Column, Float, Integer, String, DateTime
-from database import Base
+from database.database import Base
 
 class SavedTelemetry(Base):
     """
