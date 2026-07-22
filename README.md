@@ -13,10 +13,37 @@ The codebase follows a modular architecture to separate concerns and ensure main
 │   └── models.py           # SQLAlchemy database schema
 ├── telemetry/              # Telemetry domain
 │   ├── router.py           # API endpoints (/telemetry)
-│   └── schemas.py          # Pydantic data validation
+│   ├── schemas.py          # Pydantic data validation
+│   └── devices_config.py   # Device types and allowed fields/types config
 ├── services/               # Shared business logic
 │   └── anomaly_engine.py   # Core anomaly threshold rules
-└── tests/                  # Automated test suite
-    └── test_api.py
-    └── test_anomaly_engine.py
+├── tests/                  # Automated test suite
+│   ├── test_api.py
+│   └── test_anomaly_engine.py
+├── Étude de cas - Sentiom.pdf
+
+```
+
+## Prerequisites & Installation
+
+```text
+Make sure python is installed as well as all dependencies (FastAPI, Uvicorn, Pydantic, SQLAlchemy, Pytest, etc):
+
+py -m pip install fastapi uvicorn sqlalchemy pydantic pytest httpx
+
+```
+
+## Running the Project
+
+```text
+Start the Uvicorn Server from the root of the project:
+
+py -m uvicorn main:app --reload
+```
+
+## Running Tests
+
+```text
+To run the automated test suite (unit and integration tests via pytest) :
+py -m pytest
 ```
